@@ -92,15 +92,27 @@ def game(users):
             if(col.isdigit() == False):
                 print('Please enter a numeric value (1,2,3)')
         col = int(row)
-        update_board(game_board, symbol, row-1, col-1)
+        update_board(game_board, symbol, (row-1, col-1))
         print_board(game_board)
         player_1_turn = not player_1_turn
         game_on = False
     return shut_down_responses['exit']
 
 
-def update_board(game_board, symbol, row, col):
-    game_board[row][col] = symbol
+def update_board(game_board, symbol, coor):
+    game_board[coor[0]][coor[1]] = symbol
+    check_for_winner(game_board, coor, symbol)
+
+
+def check_for_winner(game_board, coor, symbol):
+    '''
+    From coor passed:
+        Check Verticle (-1,0,1)
+        Horizontal (-1,0,1)
+        Diagonal (-1,0,1) and (1)
+    '''
+    if game_board[coor(0)] == [symbol]*3:
+        print(True)
 
 
 def print_board(game_board):
@@ -118,5 +130,23 @@ def print_winner(victor):
     print(f'{victor} is the winner!!!')
 
 
+def test_logic():
+    game_board = [['X', 'X', 'X'], [' ', ' ', ' '], [' ', ' ', ' ']]
+    if game_board[0] == ['X']*3:
+        print('Horizontal')
+    game_board = [['X', ' ', ' '], ['X', ' ', ' '], ['X', ' ', ' ']]
+    verticleBoard = [row[0] for row in game_board]
+    print(verticleBoard)
+    if verticleBoard == ['X']*3:
+        print('Verticle')
+    game_board = [['X', ' ', ' '], [' ', 'X', ' '], [' ', ' ', 'X']]
+    if [game_board[0][0], game_board[1][1], game_board[2][2]] == ['X']*3:
+        print('Diagonal')
+    game_board = [[' ', ' ', 'X'], [' ', 'X', ' '], ['X', ' ', ' ']]
+    if [game_board[0][2], game_board[1][1], game_board[2][0]] == ['X']*3:
+        print('Diagonal Again')
+
+
 if __name__ == '__main__':
-    tic_tac_toe()
+    # tic_tac_toe()
+    test_logic()
