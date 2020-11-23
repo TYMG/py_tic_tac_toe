@@ -84,16 +84,23 @@ def game(users):
             symbol = users[player_2]
         row = ''
         col = ''
-        while row.isdigit() == False:
-            row = input('Please enter a Row (1,2,3): ')
-            if(row.isdigit() == False):
-                print('Please enter a numeric value (1,2,3)')
-        row = int(row)
-        while col.isdigit() == False:
-            col = input('Please enter a Col (1,2,3): ')
-            if(col.isdigit() == False):
-                print('Please enter a numeric value (1,2,3)')
-        col = int(row)
+        while True:
+            while row.isdigit() == False:
+                row = input('Please enter a Row (1,2,3): ')
+                if(row.isdigit() == False):
+                    print('Please enter a numeric value (1,2,3)')
+            row = int(row)
+            while col.isdigit() == False:
+                col = input('Please enter a Col (1,2,3): ')
+                if(col.isdigit() == False):
+                    print('Please enter a numeric value (1,2,3)')
+            col = int(col)
+            print(f'{col},{row}')
+            if game_board[row-1][col-1] == ' ':
+                break
+            print('Cell has already be taken, please enter another Row and Col\n')
+            row = ''
+            col = ''
         player_1_turn = not player_1_turn
         game_on = update_board(game_board, symbol, (row-1, col-1),
                                player_1 if player_1_turn else player_2)
