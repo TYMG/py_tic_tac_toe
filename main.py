@@ -8,6 +8,8 @@ shut_down_responses = {'quit': 'quit', 'exit': 'exit', 'restart': 'restart'}
 player_1 = 'Player 1'
 player_2 = 'Player 2'
 
+diagonal_checks = ((0, 0), (0, 2), (1, 1), (2, 0), (2, 2))
+
 empty_row = [' ', ' ', ' ']
 
 
@@ -92,27 +94,45 @@ def game(users):
             if(col.isdigit() == False):
                 print('Please enter a numeric value (1,2,3)')
         col = int(row)
-        update_board(game_board, symbol, (row-1, col-1))
-        print_board(game_board)
         player_1_turn = not player_1_turn
-        game_on = False
+        game_on = update_board(game_board, symbol, (row-1, col-1),
+                               player_1 if player_1_turn else player_2)
+        print_board(game_board)
     return shut_down_responses['exit']
 
 
-def update_board(game_board, symbol, coor):
+def update_board(game_board, symbol, coor, player):
     game_board[coor[0]][coor[1]] = symbol
-    check_for_winner(game_board, coor, symbol)
+    is_winner = check_for_winner(game_board, coor, symbol)
+    if is_winner:
+        print_winner(player)
+        return False
+    return True
 
 
 def check_for_winner(game_board, coor, symbol):
+    global diagonal_checks
+    symbol_list = [symbol]*3
     '''
     From coor passed:
         Check Verticle (-1,0,1)
         Horizontal (-1,0,1)
         Diagonal (-1,0,1) and (1)
     '''
-    if game_board[coor(0)] == [symbol]*3:
-        print(True)
+    print(coor[0])
+    winner = False
+    if game_board[coor[0]] == symbol_list:
+        print('Horizontal')
+        winner = True
+    verticleBoard = [row[coor[1]] for row in game_board]
+    if verticleBoard == symbol_list:
+        print('Verticle')
+        winner = True
+    if coor in diagonal_checks:
+        if [game_board[0][0], game_board[1][1], game_board[2][2]] == symbol_list or [game_board[0][2], game_board[1][1], game_board[2][0]] == symbol_list:
+            print('Diagonal')
+            winner = True
+    return winner
 
 
 def print_board(game_board):
@@ -147,6 +167,13 @@ def test_logic():
         print('Diagonal Again')
 
 
+def checkInDiagonal():
+    global diagonal_checks
+    if (0, 0) in diagonal_checks:
+        print('TRUE')
+
+
 if __name__ == '__main__':
-    # tic_tac_toe()
-    test_logic()
+    tic_tac_toe()
+    # test_logic()
+    # checkInDiagonal()
