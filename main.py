@@ -7,6 +7,7 @@ no_responses = ('N', 'No')
 shut_down_responses = {'quit': 'quit', 'exit': 'exit', 'restart': 'restart'}
 player_1 = 'Player 1'
 player_2 = 'Player 2'
+turns = 0
 
 diagonal_checks = ((0, 0), (0, 2), (1, 1), (2, 0), (2, 2))
 
@@ -20,6 +21,7 @@ def tic_tac_toe():
     global shut_down_responses
     global player_1
     global player_2
+    global turns
 
     running = True
     users = {player_1: '', player_2: ''}
@@ -37,6 +39,7 @@ def tic_tac_toe():
                     break
                 else:
                     print('Sorry that is not a valid input.\nPlease enter X or O\n')
+            turns = 1
             result = game(users)
             if result == shut_down_responses['exit']:
                 running = False
@@ -101,18 +104,24 @@ def game(users):
             print('Cell has already be taken, please enter another Row and Col\n')
             row = ''
             col = ''
-        player_1_turn = not player_1_turn
         game_on = update_board(game_board, symbol, (row-1, col-1),
                                player_1 if player_1_turn else player_2)
+        player_1_turn = not player_1_turn
         print_board(game_board)
     return shut_down_responses['exit']
 
 
 def update_board(game_board, symbol, coor, player):
+    global turns
+
+    turns += 1
     game_board[coor[0]][coor[1]] = symbol
     is_winner = check_for_winner(game_board, coor, symbol)
     if is_winner:
         print_winner(player)
+        return False
+    if turns == 10:
+        tie_winner()
         return False
     return True
 
@@ -126,18 +135,14 @@ def check_for_winner(game_board, coor, symbol):
         Horizontal (-1,0,1)
         Diagonal (-1,0,1) and (1)
     '''
-    print(coor[0])
     winner = False
     if game_board[coor[0]] == symbol_list:
-        print('Horizontal')
         winner = True
     verticleBoard = [row[coor[1]] for row in game_board]
     if verticleBoard == symbol_list:
-        print('Verticle')
         winner = True
     if coor in diagonal_checks:
         if [game_board[0][0], game_board[1][1], game_board[2][2]] == symbol_list or [game_board[0][2], game_board[1][1], game_board[2][0]] == symbol_list:
-            print('Diagonal')
             winner = True
     return winner
 
@@ -155,6 +160,10 @@ def print_board(game_board):
 
 def print_winner(victor):
     print(f'{victor} is the winner!!!')
+
+
+def tie_winner():
+    print(f'We have a tie !!! ¯\_(ツ)_/¯ ')
 
 
 def test_logic():
